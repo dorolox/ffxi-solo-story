@@ -12,4 +12,7 @@ xi.settings.solo_story =
 
     -- Trusts
     TRUST_FIVE = true, -- 5 Trusts sans les KI RoV Rhapsody in White/Crimson
+
+    -- Repos (/heal) : % des PV/PM max ajoutés à chaque tick (0 = désactivé). Intervalle : map.HEALING_TICK_DELAY
+    REST_REGEN_PERCENT = 10,
 }
