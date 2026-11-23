@@ -1,0 +1,143 @@
+# Compose local "solo_story" — dérivé de dev.docker-compose.yml (gitignoré).
+# Différences vs dev :
+#  - DB persistante (volume `database`) ; dev n'en a pas → données perdues au `down`.
+#  - Ports DB / HTTP API liés à 127.0.0.1 uniquement.
+#  - Build Release (dev = Debug).
+#  - settings/ et modules/ montés en bind : modifs Lua/SQL sans rebuild
+#    (un module *.cpp ou un patch C++ exige `docker compose build`).
+#  - database-update obligatoire et réussi avant les services.
+# Identifiants dans .env (gitignoré).
+
+x-dbcreds: &dbcreds
+  MARIADB_DATABASE: ${MARIADB_DATABASE:-xidb}
+  MARIADB_USER: ${MARIADB_USER:-xiadmin}
+  MARIADB_PASSWORD: ${MARIADB_PASSWORD:?définir MARIADB_PASSWORD dans .env}
+
+x-common: &common
+  image: landsandboat/server:local
+  pull_policy: never
+  user: "1000:1000"
+  environment: &env
+    <<: *dbcreds
+    XI_NETWORK_SQL_HOST: database
+    XI_NETWORK_SQL_PORT: 3306
+    XI_NETWORK_ZMQ_IP: world
+    XI_NETWORK_HTTP_HOST: 0.0.0.0
+    XI_NETWORK_TLS_KEY: /server/certs/login.key
+    XI_NETWORK_TLS_CERT: /server/certs/login.cert
+  volumes:
+    - certs:/server/certs
+    - navmeshes:/server/navmeshes
+    - ximeshes:/server/ximeshes
+    - ./settings:/server/settings
+    - ./modules:/server/modules
+    - ./log:/server/log
+
+x-after-update: &after-update
+  database:
+    condition: service_healthy
+    restart: true
+  database-update:
+    condition: service_completed_successfully
+
+services:
+  database:
+    image: mariadb:12.3
+    restart: always
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_general_ci']
+    environment:
+      <<: *dbcreds
+      MARIADB_RANDOM_ROOT_PASSWORD: "true"
+    ports:
+      - "127.0.0.1:3307:3306"   # 3306 hôte déjà pris par mysql-server natif de WSL
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Construit l'image depuis les sources (target final = service).
+  build:
+    <<: *common
+    build:
+      dockerfile: docker/ubuntu.Dockerfile
+      context: .
+      args:
+        COMPILER: "gcc"
+        CMAKE_BUILD_TYPE: "Release"
+    command: ["true"]
+    restart: "no"
+    profiles: ["build"]
+
+  database-update:
+    <<: *common
+    command: ["python", "/server/tools/dbtool.py", "update"]
+    restart: "no"
+    volumes:
+      - ./.git:/server/.git:ro
+      - ./modules:/server/modules
+      - ./log:/server/log
+    depends_on:
+      database:
+        condition: service_healthy
+
+  connect:
+    <<: *common
+    command: ["/server/xi_connect"]
+    restart: unless-stopped
+    ports:
+      - "54001:54001"
+      - "54230:54230"
+      - "54231:54231"
+    depends_on: *after-update
+
+  search:
+    <<: *common
+    command: ["/server/xi_search"]
+    restart: unless-stopped
+    ports:
+      - "54002:54002"
+    depends_on: *after-update
+
+  profile:
+    <<: *common
+    command: ["/server/xi_profile"]
+    restart: unless-stopped
+    ports:
+      - "51220:51220"
+      - "51240:51240"
+    depends_on: *after-update
+
+  world:
+    <<: *common
+    command: ["/server/xi_world"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8088:8088"
+    depends_on: *after-update
+
+  map:
+    <<: *common
+    command: ["/server/xi_map"]
+    restart: unless-stopped
+    ports:
+      - "54230:54230/udp"
+    depends_on:
+      <<: *after-update
+      world:
+        condition: service_started
+      connect:
+        condition: service_started
+      search:
+        condition: service_started
+
+volumes:
+  database:
+  certs:
+  navmeshes:
+    external: true
+  ximeshes:
+    external: true
