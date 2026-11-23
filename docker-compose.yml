@@ -134,6 +134,23 @@ services:
       search:
         condition: service_started
 
+  # Bot d'hôtel des ventes (ffxiahbot). Prix : ahbot/items.csv (retail ffxiah.com, 2024-10).
+  ahbot:
+    build:
+      context: ./ahbot
+      additional_contexts:
+        src: ../ffxiahbot
+    image: solo_story/ahbot:local
+    restart: unless-stopped
+    environment:
+      <<: *dbcreds
+      AHBOT_NAME: Marchand
+      AHBOT_TICK: 30        # secondes entre deux passages d'achat
+      AHBOT_RESTOCK: 3600   # secondes entre deux réassorts
+    volumes:
+      - ./ahbot/items.csv:/work/items.csv:ro
+    depends_on: *after-update
+
 volumes:
   database:
   certs:

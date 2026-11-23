@@ -21,4 +21,7 @@ xi.settings.map =
 
     -- Repos (/heal) : un tick toutes les 3 s (retail 10). Bonus en % : settings/solo_story.lua
     HEALING_TICK_DELAY = 3,
+
+    -- Économie solo : gils lâchés par les mobs x5 (retail 1.0)
+    MOB_GIL_MULTIPLIER = 5.0,
 }
