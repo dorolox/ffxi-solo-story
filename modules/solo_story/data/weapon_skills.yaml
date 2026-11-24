@@ -1,0 +1,4 @@
+# solo_story : le BLM peut apprendre Entropy (CatsEyeXI). Correctif RFC 7396 : la liste est remplacée en entier.
+weapon_skills:
+  entropy:
+    jobs: [war, drk, bst, blm]

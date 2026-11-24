@@ -1,0 +1,6 @@
+# solo_story : rangs de compétence repris de CatsEyeXI (correctif RFC 7396 de data/skills.yaml)
+skills:
+  ranks:
+    scythe:       {blm: c_plus}   # BLM E -> C+
+    marksmanship: {cor: a}        # COR B -> A
+    club:         {cor: e, dnc: e} # COR et DNC : ajout au rang E
