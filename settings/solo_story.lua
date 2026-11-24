@@ -34,4 +34,8 @@ xi.settings.solo_story =
     STORAGE_UNLOCK_ALL = true,
     -- Commande !mog (sans GM) : menu du Moogle partout (zones patchées avec mogmenu)
     MOG_ANYWHERE = true,
+
+    -- Rééquilibrage des jobs repris de CatsEyeXI (partie Lua : lua/job_rebalance.lua ;
+    -- niveaux/rangs : sql/catseye_jobs.sql et data/*.yaml, appliqués indépendamment de ce réglage)
+    CATSEYE_JOBS = true,
 }
