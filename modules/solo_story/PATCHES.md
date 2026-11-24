@@ -32,6 +32,24 @@ Chaque patch C++ ci-dessous est minimal, désactivable par réglage, et couvert 
 
 - **Test** : `modules/solo_story/tests/no_aggro.lua`.
 
+## 2. Plafond de hâte des capacités (Job Ability Haste) à 30 %
+
+- **Fichier** : `src/map/entities/battle_entity.cpp`, `CBattleEntity::GetWeaponDelay` (calcul du délai d'attaque).
+- **Commit LSB de référence** : `fc22b012a4`.
+- **Raison** : rééquilibrage CatsEyeXI (« Job Ability Haste caps at 30% instead of 25% »). La hâte d'équipement reste
+  plafonnée à 25 % et la hâte magique à 43,75 % (inchangées). Aucun point d'accroche Lua : le plafond était codé en dur.
+- **Réglage** : `settings/solo_story.lua` → `JA_HASTE_CAP` (0,30). Absent ou 0 = 0,25 (retail). Redémarrer après modification.
+- **Diff** :
+
+```cpp
+-                hasteAbility = std::clamp<float>(hasteAbility, -0.25f, 0.25f);
++                const float jaHasteCap = settings::get<float>("solo_story.JA_HASTE_CAP");
++                hasteAbility           = std::clamp<float>(hasteAbility, -0.25f, jaHasteCap > 0.0f ? jaHasteCap : 0.25f);
+```
+
+- **Test** : pas de test Lua possible (aucune fonction Lua n'expose le délai après hâte) ; vérifié par compilation
+  (`-Werror`) et lecture du code.
+
 ## Recompiler après un patch C++ : piège du cache
 
 `docker compose --profile build build build` réutilise un cache de build Docker. Le générateur d'enums

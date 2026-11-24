@@ -42,4 +42,5 @@ xi.settings.solo_story =
     CATSEYE_WS_DEBUFF_DURATION = 30, -- s de Frost (Frostbite/Freezebite) et Burn (Flaming Arrow/Hot Shot)
     CATSEYE_AMBUSH_RECAST      = 5,  -- s de délai en moins sur Sneak/Trick Attack par rang de mérite Ambush
     CATSEYE_TRICK_ATTACK_TRANSFER = 50, -- % de la haine du voleur transférée au partenaire de Trick Attack
+    JA_HASTE_CAP = 0.30, -- plafond de hâte des capacités (Hasso, Desperate Blows, Haste Samba...) ; retail 0.25. Lu par le C++ (patch n°2), redémarrage requis
 }

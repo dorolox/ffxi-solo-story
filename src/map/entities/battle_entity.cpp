@@ -550,7 +550,10 @@ auto CBattleEntity::GetWeaponDelay(bool tp) -> uint32
                 }
 
                 hasteMagic   = std::clamp<float>(hasteMagic, -1.0f, 0.4375f);
-                hasteAbility = std::clamp<float>(hasteAbility, -0.25f, 0.25f);
+                // solo_story patch (modules/solo_story/PATCHES.md): job ability haste cap from settings
+                // (CatsEyeXI: 30%). Missing or 0 setting = retail 25%.
+                const float jaHasteCap = settings::get<float>("solo_story.JA_HASTE_CAP");
+                hasteAbility           = std::clamp<float>(hasteAbility, -0.25f, jaHasteCap > 0.0f ? jaHasteCap : 0.25f);
                 hasteGear    = std::min(hasteGear, 0.25f);
 
                 float hasteCap  = 1.0f - settings::get<float>("main.DELAY_REDUCTION_CAP");
