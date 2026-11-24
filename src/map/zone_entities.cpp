@@ -22,6 +22,7 @@
 #include "zone_entities.h"
 
 #include "common/logging_context.h"
+#include "common/settings.h"
 #include "data/enums/detects.h"
 #include "data/enums/mob_mod.h"
 #include "enmity_container.h"
@@ -893,6 +894,15 @@ void CZoneEntities::tapMobAggro(CCharEntity* PChar, CMobEntity* PCurrentMob)
     }
 
     bool validAggro = mobCheck > EMobDifficulty::TooWeak || PChar->isSitting() || PCurrentMob->getMobMod(xi::MobMod::AlwaysAggro);
+
+    // solo_story patch (modules/solo_story/PATCHES.md): a mob NO_AGGRO_LEVEL_DIFF levels or more above the player
+    // does not aggro on its own (mirror of the retail "too weak" rule). 0 or missing setting = retail behavior.
+    const auto noAggroLevelDiff = settings::get<uint8>("solo_story.NO_AGGRO_LEVEL_DIFF");
+    if (noAggroLevelDiff > 0 && PCurrentMob->GetMLevel() >= PChar->GetMLevel() + noAggroLevelDiff)
+    {
+        validAggro = false;
+    }
+
     if (validAggro && PController->CanAggroTarget(PChar))
     {
         PCurrentMob->PAI->Engage(PChar->entityId());

@@ -24,4 +24,9 @@ xi.settings.solo_story =
 
     -- Boutique de sorts : Moogle "Grimoire" à Lower Jeuno et dans les 3 capitales (rechargement de zone requis)
     SPELL_SHOP = true,
+
+    -- Mobs trop forts : un mob de NO_AGGRO_LEVEL_DIFF niveaux ou plus au-dessus du joueur ne l'agresse pas.
+    -- Lu par le coeur C++ (patch src/map/zone_entities.cpp, voir modules/solo_story/PATCHES.md). 0 = retail.
+    -- Redémarrage des serveurs requis après modification.
+    NO_AGGRO_LEVEL_DIFF = 6,
 }
