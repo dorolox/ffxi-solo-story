@@ -15,4 +15,9 @@ xi.settings.solo_story =
 
     -- Repos (/heal) : % des PV/PM max ajoutés à chaque tick (0 = désactivé). Intervalle : map.HEALING_TICK_DELAY
     REST_REGEN_PERCENT = 10,
+
+    -- Téléportations : tous les home points + survival guides (une fois, à la connexion)
+    WARPS_UNLOCK_ALL = true,
+    -- Tarif home points / survival guides ÷ 5 (comme Rhapsody in White, sans la KI)
+    WARPS_DISCOUNT   = true,
 }
