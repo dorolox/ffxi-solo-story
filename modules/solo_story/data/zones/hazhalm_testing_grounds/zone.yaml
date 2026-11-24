@@ -1,0 +1,3 @@
+# solo_story : GÉNÉRÉ par modules/solo_story/tools/gen_mogmenu_patches.py, ne pas éditer.
+# Ajoute mogmenu (menu du Moogle hors Mog House, commande !mog).
+misc: [escape, mazurka, tractor, pet, los_player_block, mogmenu]

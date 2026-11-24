@@ -29,4 +29,9 @@ xi.settings.solo_story =
     -- Lu par le coeur C++ (patch src/map/zone_entities.cpp, voir modules/solo_story/PATCHES.md). 0 = retail.
     -- Redémarrage des serveurs requis après modification.
     NO_AGGRO_LEVEL_DIFF = 6,
+
+    -- Rangements : Mog Safe/Safe 2/Sack/Locker à 80, Locker permanent toutes zones, 2e étage débloqué
+    STORAGE_UNLOCK_ALL = true,
+    -- Commande !mog (sans GM) : menu du Moogle partout (zones patchées avec mogmenu)
+    MOG_ANYWHERE = true,
 }
