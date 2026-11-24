@@ -21,4 +21,7 @@ xi.settings.solo_story =
     WARPS_UNLOCK_ALL = true,
     -- Tarif home points / survival guides ÷ 5 (comme Rhapsody in White, sans la KI)
     WARPS_DISCOUNT   = true,
+
+    -- Boutique de sorts : Moogle "Grimoire" à Lower Jeuno et dans les 3 capitales (rechargement de zone requis)
+    SPELL_SHOP = true,
 }
