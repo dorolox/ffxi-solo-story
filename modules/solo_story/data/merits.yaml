@@ -1,0 +1,8 @@
+# solo_story : BLU +1 point de sorts bleus en plus par rang de mérite Assimilation (CatsEyeXI : +10 au rang 5).
+# blueutils.cpp ajoute GetMeritValue(Assimilation) aux points : valeur 1 -> 2 par rang. Correctif RFC 7396.
+merits:
+  categories:
+    blu_group_2:
+      merits:
+        assimilation:
+          value: 2

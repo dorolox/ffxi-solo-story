@@ -41,4 +41,5 @@ xi.settings.solo_story =
     CATSEYE_WS_BONUS           = 50, -- % de dégâts en plus : Wasp Sting, Viper Bite, Frostbite, Freezebite, Shadow of Death
     CATSEYE_WS_DEBUFF_DURATION = 30, -- s de Frost (Frostbite/Freezebite) et Burn (Flaming Arrow/Hot Shot)
     CATSEYE_AMBUSH_RECAST      = 5,  -- s de délai en moins sur Sneak/Trick Attack par rang de mérite Ambush
+    CATSEYE_TRICK_ATTACK_TRANSFER = 50, -- % de la haine du voleur transférée au partenaire de Trick Attack
 }
