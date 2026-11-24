@@ -1,22 +1,20 @@
 -----------------------------------
 -- solo_story : utilitaire partagé (pas de Module ici -> chargé comme fichier d'appui)
--- Proxy d'une entité joueur qui répond "possédée" pour certaines key items, sans les donner.
--- Toutes les autres méthodes sont transmises à la vraie entité.
+-- Proxy d'une entité : certaines méthodes sont remplacées, toutes les autres sont transmises
+-- à la vraie entité. Sert à appeler une fonction d'origine de LSB en lui faisant "voir" un état
+-- différent (KI possédée, pas de battlefield...) sans modifier le personnage.
 -- Limite : le proxy ne peut pas être passé en argument à une fonction C++ (seulement des appels de méthode).
 -----------------------------------
 local M = {}
 
-function M.withKeyItems(entity, keyItems)
-    local granted = {}
-    for _, ki in ipairs(keyItems) do
-        granted[ki] = true
-    end
-
+-- overrides : { nomMethode = function(entity, ...) ... end }
+function M.wrap(entity, overrides)
     return setmetatable({}, {
         __index = function(_, key)
-            if key == 'hasKeyItem' then
-                return function(_, keyItem)
-                    return granted[keyItem] == true or entity:hasKeyItem(keyItem)
+            local override = overrides[key]
+            if override then
+                return function(_, ...)
+                    return override(entity, ...)
                 end
             end
 
@@ -28,6 +26,20 @@ function M.withKeyItems(entity, keyItems)
             end
 
             return value
+        end,
+    })
+end
+
+-- Répond "possédée" pour ces key items, sans les donner.
+function M.withKeyItems(entity, keyItems)
+    local granted = {}
+    for _, ki in ipairs(keyItems) do
+        granted[ki] = true
+    end
+
+    return M.wrap(entity, {
+        hasKeyItem = function(real, keyItem)
+            return granted[keyItem] == true or real:hasKeyItem(keyItem)
         end,
     })
 end
